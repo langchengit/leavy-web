@@ -1,4 +1,5 @@
 import { Bell, Calendar, Car, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 import { SignInButtons } from '../components/connections';
 import { Button, Card, Logo, StatusPill } from '../components/ui';
@@ -50,6 +51,9 @@ export function SignInPage() {
           <Button variant="secondary" icon={User} label="Continue as guest" onClick={continueAsGuest} title="Uses Leavy without an account. You can sign in later in Connections." />
           <p className="t-caption muted center">As a guest, add a calendar link or try the sample events. You can sign in later.</p>
         </Card>
+        <p className="t-caption muted center legal-links">
+          <Link to="/privacy">Privacy Policy</Link> · <Link to="/terms">Terms of Service</Link>
+        </p>
       </section>
     </div>
   );

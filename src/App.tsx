@@ -6,6 +6,7 @@ import { CloudSync } from './lib/cloudSync';
 import { SettingsProvider } from './lib/settings';
 import { TripsProvider } from './lib/trips';
 import { ConnectionsPage } from './pages/Connections';
+import { PrivacyPage, TermsPage } from './pages/Legal';
 import { PreferencesPage } from './pages/Preferences';
 import { SignInPage } from './pages/SignIn';
 import { TripPage } from './pages/Trip';
@@ -17,7 +18,12 @@ export function App() {
       <AuthProvider>
         <CloudSync />
         <TripsProvider>
-          <Gate />
+          <Routes>
+            {/* Public, so Google's consent screen can link to them without a sign-in. */}
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="*" element={<Gate />} />
+          </Routes>
         </TripsProvider>
       </AuthProvider>
     </SettingsProvider>

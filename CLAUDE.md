@@ -4,7 +4,7 @@ The browser version of Leavy: it reads the user's calendar, gets travel times fr
 
 ## Layout
 
-- `src/pages/`: `Upcoming.tsx`, `Trip.tsx`, `Connections.tsx`, `Preferences.tsx`, `SignIn.tsx`. Routes are in `App.tsx`.
+- `src/pages/`: `Upcoming.tsx`, `Trip.tsx`, `Connections.tsx`, `Preferences.tsx`, `SignIn.tsx`, `Legal.tsx` (privacy policy and terms). Routes are in `App.tsx`.
 - `src/components/`: `Shell.tsx` (navigation), `ui.tsx` (Card, Panel, Section, Button, Chip, SwitchRow, LinkButton, Banner, StatusPill, Logo, Spinner), `controls.tsx` (ModePicker, GraceStepper, OriginPicker, preference controls), `TripDetail.tsx`, `upcoming.tsx`, `connections.tsx`, `icons.tsx` (lucide-react). Reuse these instead of new one-off markup.
 - `src/styles.css`: every style. Colours are CSS variables with a dark-mode block; use them (`var(--primary)`, `var(--muted)`, status classes like `status-soon`) instead of new colours. The three layouts are media queries at 1100px and 720px, matched by `useWide()` / `useCompact()` in `hooks.ts`.
 - `src/lib/`: logic, kept close to the phone app's so fixes can be ported both ways. `*.test.ts` run with `npm test` (Vitest).
@@ -12,7 +12,7 @@ The browser version of Leavy: it reads the user's calendar, gets travel times fr
 
 ## How the app works
 
-1. **Start-up and sign-in:** `App.tsx` waits for `AuthProvider` (`auth.tsx`) to be `ready`. With no account and no guest mode it shows `SignInPage` whatever the URL. "Continue as guest" sets `leavy.guest` in localStorage, and `signOut()` clears it. Google sign-in is a Supabase OAuth redirect; the returned Google token is kept by `rememberGoogleToken()` (`google.ts`).
+1. **Start-up and sign-in:** `App.tsx` waits for `AuthProvider` (`auth.tsx`) to be `ready`. With no account and no guest mode it shows `SignInPage` whatever the URL, except `/privacy` and `/terms`, which are public because Google's OAuth consent screen links to them. "Continue as guest" sets `leavy.guest` in localStorage, and `signOut()` clears it. Google sign-in is a Supabase OAuth redirect; the returned Google token is kept by `rememberGoogleToken()` (`google.ts`).
 2. **Settings:** `SettingsProvider` (`settings.tsx`) loads `wtl.settings.v1` from localStorage, merged over `DEFAULT_SETTINGS`. `CloudSync` (`cloudSync.ts`) pulls the `SYNCED` keys once per sign-in, then pushes changes after a short delay.
 3. **Events:** `refresh()` in `trips.tsx` collects events from Google Calendar (`googleCalendar.ts`) and calendar links (`icsFeed.ts`, through `ics-proxy`). It removes duplicates and keeps events between now and `lookAheadHours` ahead. With no source, or with `demoMode` on, it uses `demo.ts`.
 4. **Trips:** for each event with a location, `trips.tsx` applies the per-event overrides, works out `arriveBy = start − grace`, and calls `getRoute()` (`routes.ts`) from the start address or the browser's location. Errors become `trip.error` and never throw out of `refresh()`.
