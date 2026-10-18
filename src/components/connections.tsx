@@ -326,7 +326,7 @@ export function DemoModeSwitch() {
   return (
     <SwitchRow
       label="Demo mode"
-      helper={usingDemo && !settings.demoMode ? 'On automatically until you add a calendar.' : 'Use sample events and made-up travel times.'}
+      helper={usingDemo && !settings.demoMode ? 'On automatically until a Google Maps key is set up.' : 'Use sample events and made-up travel times.'}
       value={settings.demoMode}
       onChange={(demoMode) => update({ demoMode })}
     />

@@ -78,9 +78,10 @@ export function TripsProvider({ children }: { children: ReactNode }) {
 
     const now = Date.now();
     const feeds = settings.calendarFeeds;
-    // Sample data only when there's no real calendar source at all (or the user asked for it).
-    const usingDemo =
-      settings.demoMode || (feeds.length === 0 && !settings.googleCalendar);
+    const noCalendar = feeds.length === 0 && !settings.googleCalendar;
+    // Sample data when the user asked for it, or automatically only when there's no Maps key and
+    // no calendar (a fresh checkout). Signed-in users with no calendar get a prompt instead.
+    const usingDemo = settings.demoMode || (noCalendar && !hasApiKey);
 
     let events: CalEvent[];
     let locationAccess: LocationAccess = 'unknown';
@@ -90,6 +91,9 @@ export function TripsProvider({ children }: { children: ReactNode }) {
 
     if (usingDemo) {
       events = demoEvents(now);
+    } else if (noCalendar) {
+      // Nothing to plan, so don't ask for location yet.
+      events = [];
     } else {
       const from = new Date(now);
       const to = new Date(now + settings.lookAheadHours * 3_600_000);

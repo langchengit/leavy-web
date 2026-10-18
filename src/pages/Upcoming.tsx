@@ -1,8 +1,8 @@
-import { Coffee, Map } from 'lucide-react';
+import { CalendarPlus, Coffee, FlaskConical, Map } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { TripDetail } from '../components/TripDetail';
-import { Card, SectionHeader } from '../components/ui';
+import { Button, Card, SectionHeader } from '../components/ui';
 import { NextDeparture, ScheduleChart, TripListRow, UpcomingBanners } from '../components/upcoming';
 import { useCompact, useNow, useTitle, useWide } from '../hooks';
 import { formatDay, formatTime } from '../lib/format';
@@ -20,8 +20,8 @@ export function UpcomingPage() {
   const now = useNow();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
-  const { settings } = useSettings();
-  const { loading, trips, noLocation, updatedAt } = useTrips();
+  const { settings, update } = useSettings();
+  const { loading, trips, noLocation, updatedAt, usingDemo } = useTrips();
 
   const [next, ...later] = trips;
   const selected = trips.find((x) => x.event.key === params.get('trip')) ?? next;
@@ -48,6 +48,18 @@ export function UpcomingPage() {
         <LoadingCard />
       ) : next ? (
         <NextDeparture trip={next} now={now} onDetails={() => open(next)} />
+      ) : !usingDemo && settings.calendarFeeds.length === 0 && !settings.googleCalendar ? (
+        <Card className="empty-state">
+          <CalendarPlus size={40} aria-hidden />
+          <h2 className="t-heading" style={{ color: 'var(--text)' }}>
+            Connect a calendar
+          </h2>
+          <p>Leavy plans your trips from your events. Connect Google Calendar or add a calendar link to get started.</p>
+          <div className="stack g-sm" style={{ width: '100%', maxWidth: 280, marginTop: 8 }}>
+            <Button icon={CalendarPlus} label="Connect a calendar" onClick={() => navigate('/connections')} />
+            <Button variant="secondary" icon={FlaskConical} label="Try sample events" onClick={() => update({ demoMode: true })} />
+          </div>
+        </Card>
       ) : (
         <Card className="empty-state">
           <Coffee size={40} aria-hidden />
